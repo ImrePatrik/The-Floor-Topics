@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>The Floor – Display</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest-topics.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            background:#000;
+            color:#fff;
+            overflow:hidden;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        #topicSelector {
+            position:fixed;
+            top:0; left:0; right:0; bottom:0;
+            background:rgba(0,0,0,0.95);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:20px;
+            z-index:100;
+        }
+        #topicSelector.hidden { display:none; }
+
+        #topicSelector h1 {
+            font-size:2.5rem;
+            margin-bottom:20px;
+        }
+        #topicSelector select {
+            font-size:1.5rem;
+            padding:12px 20px;
+            border-radius:8px;
+            background:#222;
+            color:#fff;
+            border:2px solid #555;
+        }
+        #topicSelector button {
+            font-size:1.5rem;
+            padding:12px 40px;
+            border-radius:8px;
+            background:#4cff8b;
+            color:#000;
+            border:none;
+            cursor:pointer;
+            font-weight:bold;
+        }
+        #topicSelector button:hover {
+            background:#3ae070;
+        }
+
+        #imageDisplay {
+            width:100vw;
+            height:100vh;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            position:relative;
+        }
+        #imageDisplay.visible { display:flex; }
+
+        #imageDisplay img {
+            max-width:100%;
+            max-height:100%;
+            object-fit:contain;
+        }
+
+        #settingsIcon {
+            position:fixed;
+            top:20px;
+            right:20px;
+            font-size:2.5rem;
+            background:rgba(255,255,255,0.2);
+            border-radius:50%;
+            width:60px;
+            height:60px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            cursor:pointer;
+            z-index:10;
+        }
+        #settingsIcon:hover {
+            background:rgba(255,255,255,0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div id="topicSelector">
+    <h1>Válassz témakört</h1>
+    <select id="topicSelect">
+        <option value="random">Véletlen téma</option>
+        <option value="animals">Állatok</option>
+        <option value="sports">Sport</option>
+        <option value="cities">Városok</option>
+        <option value="foods">Ételek</option>
+        <option value="movies">Filmek</option>
+        <option value="extinct">Kihalt állatok</option>
+    </select>
+    <button id="confirmBtn">Megerősít</button>
+</div>
+
+<div id="imageDisplay">
+    <img id="displayImage" src="" alt="Témakép">
+    <div id="settingsIcon">⚙️</div>
+</div>
+
+<!-- Firebase SDK (compat verzió) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAzKi333ygf-uBbs47GhtoESfgEPfj9m8g",
+        authDomain: "the-floor-app-917cd.firebaseapp.com",
+        databaseURL: "https://the-floor-app-917cd-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "the-floor-app-917cd",
+        storageBucket: "the-floor-app-917cd.firebasestorage.app",
+        messagingSenderId: "49000806620",
+        appId: "1:49000806620:web:d024b729d92def6ac91c19"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const gameRef = db.ref('game');
+
+    const topicKeywords = {
+        random: 'game',
+        animals: 'animals',
+        sports: 'sports',
+        cities: 'city,skyline',
+        foods: 'food',
+        movies: 'cinema,movie',
+        extinct: 'extinct+animal'
+    };
+
+    let currentTopic = null;
+
+    const elSelector = document.getElementById('topicSelector');
+    const elDisplay = document.getElementById('imageDisplay');
+    const elTopicSelect = document.getElementById('topicSelect');
+    const elConfirmBtn = document.getElementById('confirmBtn');
+    const elSettingsIcon = document.getElementById('settingsIcon');
+    const elImage = document.getElementById('displayImage');
+
+    elConfirmBtn.addEventListener('click', () => {
+        currentTopic = elTopicSelect.value;
+        gameRef.update({ topic: currentTopic });
+        elSelector.classList.add('hidden');
+        elDisplay.classList.add('visible');
+        loadRandomImage();
+    });
+
+    elSettingsIcon.addEventListener('click', () => {
+        elDisplay.classList.remove('visible');
+        elSelector.classList.remove('hidden');
+    });
+
+    function loadRandomImage() {
+        if (!currentTopic) return;
+        const keyword = topicKeywords[currentTopic] || topicKeywords.random;
+        const url = `https://source.unsplash.com/1920x1080/?${encodeURIComponent(keyword)}&t=${Date.now()}`;
+        elImage.src = url;
+    }
+
+    gameRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.topic && data.topic !== currentTopic) {
+            currentTopic = data.topic;
+            elTopicSelect.value = currentTopic;
+            if (elDisplay.classList.contains('visible')) {
+                loadRandomImage();
+            }
+        }
+    });
+
+    gameRef.child('imageRefresh').on('value', () => {
+        if (currentTopic && elDisplay.classList.contains('visible')) {
+            loadRandomImage();
+        }
+    });
+
+    // PWA Service Worker regisztráció
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw-topics.js')
+            .then(() => console.log('Display SW registered'))
+            .catch(err => console.error('SW error:', err));
+    }
+</script>
+</body>
+</html>
