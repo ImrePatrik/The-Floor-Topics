@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>The Floor – Display</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest-topics.json">
+    <link rel="manifest" href="/The-Floor-Topics/manifest-topics.json">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="/The-Floor-Topics/icon-192.png">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
@@ -195,10 +195,11 @@
 
     // PWA Service Worker regisztráció
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw-topics.js')
+        navigator.serviceWorker.register('/The-Floor-Topics/sw-topics.js')
             .then(() => console.log('Display SW registered'))
             .catch(err => console.error('SW error:', err));
     }
 </script>
 </body>
 </html>
+
