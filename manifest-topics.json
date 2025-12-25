@@ -2,22 +2,22 @@
   "name": "The Floor Topics",
   "short_name": "Floor Topics",
   "description": "Képmegjelenítő a The Floor játékhoz",
-  "start_url": "./index.html",
+  "start_url": "/The-Floor-Topics/index.html",
+  "scope": "/The-Floor-Topics/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "landscape",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/The-Floor-Topics/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "/The-Floor-Topics/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
-
