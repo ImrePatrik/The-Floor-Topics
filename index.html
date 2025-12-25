@@ -75,6 +75,11 @@
             max-width:100%;
             max-height:100%;
             object-fit:contain;
+            display:none;
+        }
+
+        #imageDisplay img.loaded {
+            display:block;
         }
 
         #settingsIcon {
@@ -206,6 +211,7 @@
     elSettingsIcon.addEventListener('click', () => {
         elDisplay.classList.remove('visible');
         elSelector.classList.remove('hidden');
+        elImage.classList.remove('loaded');
     });
 
     function loadRandomImage() {
@@ -222,6 +228,7 @@
         const imagePath = `${basePath}${currentTopic}/${images[randomIndex]}`;
         
         elImage.src = imagePath;
+        elImage.classList.add('loaded');
     }
 
     gameRef.on('value', (snapshot) => {
@@ -238,7 +245,7 @@
         }
         
         // Kép betöltése amikor indul a timer
-        if (data.isRunning === true && elDisplay.classList.contains('visible') && !elImage.src) {
+        if (data.isRunning === true && elDisplay.classList.contains('visible') && !elImage.classList.contains('loaded')) {
             loadRandomImage();
         }
         
@@ -249,7 +256,8 @@
             elDisplay.classList.remove('visible');
             elSelector.classList.remove('hidden');
             currentTopic = null;
-            elImage.src = ''; // Töröljük a képet
+            elImage.src = '';
+            elImage.classList.remove('loaded');
         }
     });
 
