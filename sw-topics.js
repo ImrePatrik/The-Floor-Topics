@@ -1,6 +1,6 @@
 const CACHE_NAME = 'floor-topics-v1';
 const urlsToCache = [
-  '/The-Floor-Topics/Display.html',
+  '/The-Floor-Topics/index.html',
   '/The-Floor-Topics/manifest-topics.json',
   '/The-Floor-Topics/icon-192.png',
   '/The-Floor-Topics/icon-512.png'
