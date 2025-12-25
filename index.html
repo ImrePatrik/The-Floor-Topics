@@ -109,6 +109,7 @@
         <option value="foods">Ételek</option>
         <option value="movies">Filmek</option>
         <option value="extinct">Kihalt állatok</option>
+        <option value="magyar_uralkodoi_hazak">Magyar uralkodói házak</option>
     </select>
     <button id="confirmBtn">Megerősít</button>
 </div>
@@ -137,14 +138,16 @@
     const db = firebase.database();
     const gameRef = db.ref('game');
 
-    const topicKeywords = {
-        random: 'game',
-        animals: 'animals',
-        sports: 'sports',
-        cities: 'city,skyline',
-        foods: 'food',
-        movies: 'cinema,movie',
-        extinct: 'extinct+animal'
+    // GitHub képek tömbökben
+    const topicImages = {
+        random: [],
+        animals: [],
+        sports: [],
+        cities: [],
+        foods: [],
+        movies: [],
+        extinct: [],
+        magyar_uralkodoi_hazak: []
     };
 
     let currentTopic = null;
@@ -171,9 +174,18 @@
 
     function loadRandomImage() {
         if (!currentTopic) return;
-        const keyword = topicKeywords[currentTopic] || topicKeywords.random;
-        const url = `https://source.unsplash.com/1920x1080/?${encodeURIComponent(keyword)}&t=${Date.now()}`;
-        elImage.src = url;
+        
+        const images = topicImages[currentTopic];
+        if (!images || images.length === 0) {
+            console.error('Nincs kép ehhez a témához:', currentTopic);
+            return;
+        }
+        
+        const randomIndex = Math.floor(Math.random() * images.length);
+        const basePath = '/The-Floor-Topics/images/';
+        const imagePath = `${basePath}${currentTopic}/${images[randomIndex]}`;
+        
+        elImage.src = imagePath;
     }
 
     gameRef.on('value', (snapshot) => {
@@ -202,4 +214,3 @@
 </script>
 </body>
 </html>
-
