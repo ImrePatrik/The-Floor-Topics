@@ -174,7 +174,7 @@
             'Habsburg6.png',
             'Habsburg7.png',
             'Habsburg8.png',
-            'Habsburg9.png',        
+            'Habsburg9.png',
             'Habsburg10.png',
             'Habsburg11.png',
             'Hunyadi.png',
@@ -200,7 +200,7 @@
         gameRef.update({ topic: currentTopic });
         elSelector.classList.add('hidden');
         elDisplay.classList.add('visible');
-        loadRandomImage();
+        // Kép csak akkor töltődik ha timer indul
     });
 
     elSettingsIcon.addEventListener('click', () => {
@@ -237,6 +237,11 @@
             }
         }
         
+        // Kép betöltése amikor indul a timer
+        if (data.isRunning === true && elDisplay.classList.contains('visible') && !elImage.src) {
+            loadRandomImage();
+        }
+        
         // Timer lejárat figyelése - visszaugrás témaválasztásra
         const gameEnded = (data.timeLeft1 === 0 || data.timeLeft2 === 0) && data.isRunning === false;
         
@@ -244,6 +249,7 @@
             elDisplay.classList.remove('visible');
             elSelector.classList.remove('hidden');
             currentTopic = null;
+            elImage.src = ''; // Töröljük a képet
         }
     });
 
