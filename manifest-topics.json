@@ -2,7 +2,7 @@
   "name": "The Floor Topics",
   "short_name": "Floor Topics",
   "description": "Képmegjelenítő a The Floor játékhoz",
-  "start_url": "./display.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
@@ -20,3 +20,4 @@
     }
   ]
 }
+
