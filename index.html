@@ -140,51 +140,51 @@
 
     // GitHub képek tömbökben
     const topicImages = {
-    random: [],
-    animals: [],
-    sports: [],
-    cities: [],
-    foods: [],
-    movies: [],
-    extinct: [],
-    magyar_uralkodoi_hazak: [
-        'Anjou.png',
-        'Anjou1.png',
-        'Anjou2.png',
-        'Anjou3.png',
-        'Arpad.png',
-        'Arpad1.png',
-        'Arpad2.png',
-        'Arpad3.png',
-        'Arpad4.png',
-        'Arpad5.png',
-        'Arpad6.png',
-        'Arpad7.png',
-        'Arpad8.png',
-        'Habsburg-Lotharingiai.png',
-        'Habsburg-Lotharingiai1.png',
-        'Habsburg-Lotharingiai2.png',
-        'Habsburg-Lotharingiai3.png',
-        'Habsburg.png',
-        'Habsburg1.png',
-        'Habsburg2.png',
-        'Habsburg3.png',
-        'Habsburg4.png',
-        'Habsburg5.png',
-        'Habsburg6.png',
-        'Habsburg7.png',
-        'Habsburg8.png',
-        'Habsburg9.png',
-        'Habsburg10.png',
-        'Habsburg11.png',
-        'Hunyadi.png',
-        'Jagello.png',
-        'Jagello1.png',
-        'Jagello2.png',
-        'Szapolyai.png',
-        'Szapolyai1.png'
-    ]
-};
+        random: [],
+        animals: [],
+        sports: [],
+        cities: [],
+        foods: [],
+        movies: [],
+        extinct: [],
+        magyar_uralkodoi_hazak: [
+            'Anjou.png',
+            'Anjou1.png',
+            'Anjou2.png',
+            'Anjou3.png',
+            'Arpad.png',
+            'Arpad1.png',
+            'Arpad2.png',
+            'Arpad3.png',
+            'Arpad4.png',
+            'Arpad5.png',
+            'Arpad6.png',
+            'Arpad7.png',
+            'Arpad8.png',
+            'Habsburg-Lotharingiai.png',
+            'Habsburg-Lotharingiai1.png',
+            'Habsburg-Lotharingiai2.png',
+            'Habsburg-Lotharingiai3.png',
+            'Habsburg.png',
+            'Habsburg1.png',
+            'Habsburg2.png',
+            'Habsburg3.png',
+            'Habsburg4.png',
+            'Habsburg5.png',
+            'Habsburg6.png',
+            'Habsburg7.png',
+            'Habsburg8.png',
+            'Habsburg9.png',        
+            'Habsburg10.png',
+            'Habsburg11.png',
+            'Hunyadi.png',
+            'Jagello.png',
+            'Jagello1.png',
+            'Jagello2.png',
+            'Szapolyai.png',
+            'Szapolyai1.png'
+        ]
+    };
 
     let currentTopic = null;
 
@@ -226,12 +226,24 @@
 
     gameRef.on('value', (snapshot) => {
         const data = snapshot.val();
-        if (data && data.topic && data.topic !== currentTopic) {
+        if (!data) return;
+        
+        // Témaváltozás figyelése
+        if (data.topic && data.topic !== currentTopic) {
             currentTopic = data.topic;
             elTopicSelect.value = currentTopic;
             if (elDisplay.classList.contains('visible')) {
                 loadRandomImage();
             }
+        }
+        
+        // Timer lejárat figyelése - visszaugrás témaválasztásra
+        const gameEnded = (data.timeLeft1 === 0 || data.timeLeft2 === 0) && data.isRunning === false;
+        
+        if (gameEnded && elDisplay.classList.contains('visible')) {
+            elDisplay.classList.remove('visible');
+            elSelector.classList.remove('hidden');
+            currentTopic = null;
         }
     });
 
@@ -250,5 +262,3 @@
 </script>
 </body>
 </html>
-
-
